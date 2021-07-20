@@ -21,10 +21,24 @@ Minimal config:
    docker run --rm -it --name pgbouncer \
         -p 8080:8080 \
         -p 6432:6432 \
-        -e DATABASES_template1="host=127.0.0.1 dbname=template1 auth_user=someuser" \
-        -e PGBOUNCER_POOL_MODE="session" \
-        -e AUTH_user="secret" \
+        -e databases_template1="host=127.0.0.1 dbname=template1 auth_user=someuser" \
+        -e pgbouncer_pool_mode="session" \
+        -e auth_mosquito="strong-db-secret-11!" \
         mosquito/pgbouncer-docker
+
+User specific config example:
+
+.. code:: bash
+
+   docker run --rm -it --name pgbouncer \
+        -p 8080:8080 \
+        -p 6432:6432 \
+        -e databases_template1="host=127.0.0.1 dbname=template1 auth_user=someuser" \
+        -e pgbouncer_pool_mode="session" \
+        -e auth_mosquito="strong-db-secret-11!" \
+        -e user_mosquito="pool_mode=session max_user_connections=5" \
+        mosquito/pgbouncer-docker
+
 
 
 Configuration
@@ -64,7 +78,7 @@ Entrypoint log level. Possible values is:
 User authentication settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ENV: ``AUTH_{username}={password}``
+ENV: ``auth_{username}={password}``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Adds the user ``{username}`` with the password ``{password}`` to
@@ -74,7 +88,7 @@ userlist.txt to the file. The password can be hashed, and
 Generic settings
 ~~~~~~~~~~~~~~~~
 
-ENV: ``PGBOUNCER_LISTEN_ADDR``
+ENV: ``pgbouncer_listen_addr``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Specifies a list of addresses where to listen for TCP connections. You
@@ -85,21 +99,21 @@ Addresses can be specified numerically (IPv4/IPv6) or by name.
 
 Default: not set
 
-ENV: ``PGBOUNCER_LISTEN_PORT``
+ENV: ``pgbouncer_listen_port``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Which port to listen on. Applies to both TCP and Unix sockets.
 
 Default: ``6432``
 
-ENV: ``PGBOUNCER_AUTH_HBA_FILE``
+ENV: ``pgbouncer_auth_hba_file``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 HBA configuration file to use when ``auth_type`` is ``hba``.
 
 Default: not set
 
-ENV: ``PGBOUNCER_AUTH_TYPE``
+ENV: ``pgbouncer_auth_type``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 How to authenticate users.
@@ -138,7 +152,7 @@ connections, use plain-text passwords.
 Requires that all databases are configured to log in as a specific user.
 Additionally, the console database allows any user to log in as admin.
 
-ENV: ``PGBOUNCER_AUTH_QUERY``
+ENV: ``pgbouncer_auth_query``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Query to load user's password from database.
@@ -151,7 +165,7 @@ is used, it needs to be installed into each database.
 
 Default: ``SELECT usename, passwd FROM pg_shadow WHERE usename=$1``
 
-ENV: ``PGBOUNCER_AUTH_USER``
+ENV: ``pgbouncer_auth_user``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If ``auth_user`` is set, then any user not specified in ``auth_file``
@@ -164,7 +178,7 @@ a non-superuser that calls a SECURITY DEFINER function instead.
 
 Default: not set
 
-ENV: ``PGBOUNCER_POOL_MODE``
+ENV: ``pgbouncer_pool_mode``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Specifies when a server connection can be reused by other clients.
@@ -178,7 +192,7 @@ finishes.
 ``statement`` : Server is released back to pool after query finishes.
 Transactions spanning multiple statements are disallowed in this mode.
 
-ENV: ``PGBOUNCER_MAX_CLIENT_CONN``
+ENV: ``pgbouncer_max_client_conn``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Maximum number of client connections allowed. When increased then the
@@ -207,7 +221,7 @@ does not apply in a Windows environment.
 
 Default: ``100``
 
-ENV: ``PGBOUNCER_DEFAULT_POOL_SIZE``
+ENV: ``pgbouncer_default_pool_size``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 How many server connections to allow per user/database pair. Can be
@@ -215,7 +229,7 @@ overridden in the per-database configuration.
 
 Default: ``20``
 
-ENV: ``PGBOUNCER_MIN_POOL_SIZE``
+ENV: ``pgbouncer_min_pool_size``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Add more server connections to pool if below this number. Improves
@@ -224,7 +238,7 @@ inactivity. The value is effectively capped at the pool size.
 
 Default: ``0`` (disabled)
 
-ENV: ``PGBOUNCER_RESERVE_POOL_SIZE``
+ENV: ``pgbouncer_reserve_pool_size``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 How many additional connections to allow to a pool (see
@@ -232,7 +246,7 @@ How many additional connections to allow to a pool (see
 
 Default: ``0`` (disabled)
 
-ENV: ``PGBOUNCER_RESERVE_POOL_TIMEOUT``
+ENV: ``pgbouncer_reserve_pool_timeout``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If a client has not been serviced in this many seconds, use additional
@@ -240,7 +254,7 @@ connections from the reserve pool. 0 disables.
 
 Default: ``5.0``
 
-ENV: ``PGBOUNCER_MAX_DB_CONNECTIONS``
+ENV: ``pgbouncer_max_db_connections``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Do not allow more than this many server connections per database
@@ -258,7 +272,7 @@ new server connection will immediately be opened for the waiting pool.
 
 Default: ``0`` (unlimited)
 
-ENV: ``PGBOUNCER_MAX_USER_CONNECTIONS``
+ENV: ``pgbouncer_max_user_connections``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Do not allow more than this many server connections per user (regardless
@@ -276,7 +290,7 @@ new server connection will immediately be opened for the waiting pool.
 
 Default: ``0`` (unlimited)
 
-ENV: ``PGBOUNCER_SERVER_ROUND_ROBIN``
+ENV: ``pgbouncer_server_round_robin``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 By default, PgBouncer reuses server connections in LIFO (last-in,
@@ -288,7 +302,7 @@ uniform load.
 
 Default: ``0``
 
-ENV: ``PGBOUNCER_IGNORE_STARTUP_PARAMETERS``
+ENV: ``pgbouncer_ignore_startup_parameters``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 By default, PgBouncer allows only parameters it can keep track of in
@@ -300,7 +314,7 @@ them.
 
 Default: empty
 
-ENV: ``PGBOUNCER_DISABLE_PQEXEC``
+ENV: ``pgbouncer_disable_pqexec``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Disable Simple Query protocol (PQexec). Unlike Extended Query protocol,
@@ -311,7 +325,7 @@ Query protocol will stay working.
 
 Default: ``0``
 
-ENV: ``PGBOUNCER_APPLICATION_NAME_ADD_HOST``
+ENV: ``pgbouncer_application_name_add_host``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Add the client host address and port to the application name setting set
@@ -322,7 +336,7 @@ change it again.
 
 Default: ``0``
 
-ENV: ``PGBOUNCER_CONFFILE``
+ENV: ``pgbouncer_conffile``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Show location of current config file. Changing it will make PgBouncer
@@ -330,19 +344,19 @@ use another config file for next ``RELOAD`` / ``SIGHUP``.
 
 Default: file from command line
 
-ENV: ``PGBOUNCER_SERVICE_NAME``
+ENV: ``pgbouncer_service_name``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Used on win32 service registration.
 
 Default: ``pgbouncer``
 
-ENV: ``PGBOUNCER_JOB_NAME``
+ENV: ``pgbouncer_job_name``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Alias for ``service_name``.
 
-ENV: ``PGBOUNCER_STATS_PERIOD``
+ENV: ``pgbouncer_stats_period``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Sets how often the averages shown in various ``SHOW`` commands are
@@ -354,28 +368,28 @@ Default: ``60``
 Log settings
 ~~~~~~~~~~~~
 
-ENV: ``PGBOUNCER_LOG_CONNECTIONS``
+ENV: ``pgbouncer_log_connections``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Log successful logins.
 
 Default: ``1``
 
-ENV: ``PGBOUNCER_LOG_DISCONNECTIONS``
+ENV: ``pgbouncer_log_disconnections``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Log disconnections with reasons.
 
 Default: ``1``
 
-ENV: ``PGBOUNCER_LOG_POOLER_ERRORS``
+ENV: ``pgbouncer_log_pooler_errors``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Log error messages the pooler sends to clients.
 
 Default: ``1``
 
-ENV: ``PGBOUNCER_LOG_STATS``
+ENV: ``pgbouncer_log_stats``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Write aggregated statistics into the log, every ``stats_period``. This
@@ -384,7 +398,7 @@ data from ``SHOW`` commands.
 
 Default: ``1``
 
-ENV: ``PGBOUNCER_VERBOSE``
+ENV: ``pgbouncer_verbose``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Increase verbosity. Mirrors the "-v" switch on the command line. Using
@@ -395,7 +409,7 @@ Default: ``0``
 Console access control
 ~~~~~~~~~~~~~~~~~~~~~~
 
-ENV: ``PGBOUNCER_ADMIN_USERS``
+ENV: ``pgbouncer_admin_users``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Comma-separated list of database users that are allowed to connect and
@@ -404,7 +418,7 @@ in which case any user name is allowed in as admin.
 
 Default: empty
 
-ENV: ``PGBOUNCER_STATS_USERS``
+ENV: ``pgbouncer_stats_users``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Comma-separated list of database users that are allowed to connect and
@@ -416,7 +430,7 @@ Default: empty
 Connection sanity checks, timeouts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ENV: ``PGBOUNCER_SERVER_RESET_QUERY``
+ENV: ``pgbouncer_server_reset_query``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Query sent to server on connection release, before making it available
@@ -437,7 +451,7 @@ session state.
 
 Default: ``DISCARD ALL``
 
-ENV: ``PGBOUNCER_SERVER_RESET_QUERY_ALWAYS``
+ENV: ``pgbouncer_server_reset_query_always``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Whether ``server_reset_query`` should be run in all pooling modes. When
@@ -452,7 +466,7 @@ always lose their state after each transaction.
 
 Default: ``0``
 
-ENV: ``PGBOUNCER_SERVER_CHECK_DELAY``
+ENV: ``pgbouncer_server_check_delay``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 How long to keep released connections available for immediate re-use,
@@ -461,7 +475,7 @@ always.
 
 Default: ``30.0``
 
-ENV: ``PGBOUNCER_SERVER_CHECK_QUERY``
+ENV: ``pgbouncer_server_check_query``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Simple do-nothing query to check if the server connection is alive.
@@ -470,7 +484,7 @@ If an empty string, then sanity checking is disabled.
 
 Default: ``SELECT 1;``
 
-ENV: ``PGBOUNCER_SERVER_FAST_CLOSE``
+ENV: ``pgbouncer_server_fast_close``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Disconnect a server in session pooling mode immediately or after the end
@@ -493,7 +507,7 @@ because running transactions are not interrupted, only idle sessions.
 
 Default: ``0``
 
-ENV: ``PGBOUNCER_SERVER_LIFETIME``
+ENV: ``pgbouncer_server_lifetime``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The pooler will close an unused server connection that has been
@@ -502,7 +516,7 @@ be used only once, then closed. [seconds]
 
 Default: ``3600.0``
 
-ENV: ``PGBOUNCER_SERVER_IDLE_TIMEOUT``
+ENV: ``pgbouncer_server_idle_timeout``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If a server connection has been idle more than this many seconds it will
@@ -510,7 +524,7 @@ be dropped. If 0 then timeout is disabled. [seconds]
 
 Default: ``600.0``
 
-ENV: ``PGBOUNCER_SERVER_CONNECT_TIMEOUT``
+ENV: ``pgbouncer_server_connect_timeout``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If connection and login won't finish in this amount of time, the
@@ -518,7 +532,7 @@ connection will be closed. [seconds]
 
 Default: ``15.0``
 
-ENV: ``PGBOUNCER_SERVER_LOGIN_RETRY``
+ENV: ``pgbouncer_server_login_retry``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If login failed, because of failure from connect() or authentication
@@ -526,7 +540,7 @@ that pooler waits this much before retrying to connect. [seconds]
 
 Default: ``15.0``
 
-ENV: ``PGBOUNCER_CLIENT_LOGIN_TIMEOUT``
+ENV: ``pgbouncer_client_login_timeout``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If a client connects but does not manage to log in in this amount of
@@ -535,7 +549,7 @@ stalling SUSPEND and thus online restart. [seconds]
 
 Default: ``60.0``
 
-ENV: ``PGBOUNCER_AUTODB_IDLE_TIMEOUT``
+ENV: ``pgbouncer_autodb_idle_timeout``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If the automatically created (via "*") database pools have been unused
@@ -544,7 +558,7 @@ their statistics are also forgotten. [seconds]
 
 Default: ``3600.0``
 
-ENV: ``PGBOUNCER_DNS_MAX_TTL``
+ENV: ``pgbouncer_dns_max_ttl``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 How long the DNS lookups can be cached. If a DNS lookup returns several
@@ -553,14 +567,14 @@ DNS TTL is ignored. [seconds]
 
 Default: ``15.0``
 
-ENV: ``PGBOUNCER_DNS_NXDOMAIN_TTL``
+ENV: ``pgbouncer_dns_nxdomain_ttl``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 How long error and NXDOMAIN DNS lookups can be cached. [seconds]
 
 Default: ``15.0``
 
-ENV: ``PGBOUNCER_DNS_ZONE_CHECK_PERIOD``
+ENV: ``pgbouncer_dns_zone_check_period``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Period to check if a zone serial has changed.
@@ -575,7 +589,7 @@ Works only with UDNS and c-ares backends (``--with-udns`` or
 
 Default: ``0.0`` (disabled)
 
-ENV: ``PGBOUNCER_RESOLV_CONF``
+ENV: ``pgbouncer_resolv_conf``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The location of a custom ``resolv.conf`` file. This is to allow
@@ -593,7 +607,7 @@ Default: empty (use operating system defaults)
 TLS settings
 ~~~~~~~~~~~~
 
-ENV: ``PGBOUNCER_CLIENT_TLS_SSLMODE``
+ENV: ``pgbouncer_client_tls_sslmode``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 TLS mode to use for connections from clients. TLS connections are
@@ -616,28 +630,28 @@ validated.
 
 ``verify-full`` : Same as ``verify-ca``.
 
-ENV: ``PGBOUNCER_CLIENT_TLS_KEY_FILE``
+ENV: ``pgbouncer_client_tls_key_file``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Private key for PgBouncer to accept client connections.
 
 Default: not set
 
-ENV: ``PGBOUNCER_CLIENT_TLS_CERT_FILE``
+ENV: ``pgbouncer_client_tls_cert_file``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Certificate for private key. Clients can validate it.
 
 Default: not set
 
-ENV: ``PGBOUNCER_CLIENT_TLS_CA_FILE``
+ENV: ``pgbouncer_client_tls_ca_file``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Root certificate file to validate client certificates.
 
 Default: not set
 
-ENV: ``PGBOUNCER_CLIENT_TLS_PROTOCOLS``
+ENV: ``pgbouncer_client_tls_protocols``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Which TLS protocol versions are allowed. Allowed values: ``tlsv1.0``,
@@ -647,12 +661,12 @@ Which TLS protocol versions are allowed. Allowed values: ``tlsv1.0``,
 
 Default: ``secure``
 
-ENV: ``PGBOUNCER_CLIENT_TLS_CIPHERS``
+ENV: ``pgbouncer_client_tls_ciphers``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Default: ``fast``
 
-ENV: ``PGBOUNCER_CLIENT_TLS_ECDHCURVE``
+ENV: ``pgbouncer_client_tls_ecdhcurve``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Elliptic Curve name to use for ECDH key exchanges.
@@ -662,7 +676,7 @@ curve name.
 
 Default: ``auto``
 
-ENV: ``PGBOUNCER_CLIENT_TLS_DHEPARAMS``
+ENV: ``pgbouncer_client_tls_dheparams``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 DHE key exchange type.
@@ -672,7 +686,7 @@ Allowed values: ``none`` (DH is disabled), ``auto`` (2048-bit DH),
 
 Default: ``auto``
 
-ENV: ``PGBOUNCER_SERVER_TLS_SSLMODE``
+ENV: ``pgbouncer_server_tls_sslmode``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 TLS mode to use for connections to PostgreSQL servers. TLS connections
@@ -698,28 +712,28 @@ checked against certificate.
 must be valid according to ``server_tls_ca_file``. Server host name must
 match certificate information.
 
-ENV: ``PGBOUNCER_SERVER_TLS_CA_FILE``
+ENV: ``pgbouncer_server_tls_ca_file``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Root certificate file to validate PostgreSQL server certificates.
 
 Default: not set
 
-ENV: ``PGBOUNCER_SERVER_TLS_KEY_FILE``
+ENV: ``pgbouncer_server_tls_key_file``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Private key for PgBouncer to authenticate against PostgreSQL server.
 
 Default: not set
 
-ENV: ``PGBOUNCER_SERVER_TLS_CERT_FILE``
+ENV: ``pgbouncer_server_tls_cert_file``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Certificate for private key. PostgreSQL server can validate it.
 
 Default: not set
 
-ENV: ``PGBOUNCER_SERVER_TLS_PROTOCOLS``
+ENV: ``pgbouncer_server_tls_protocols``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Which TLS protocol versions are allowed. Allowed values: ``tlsv1.0``,
@@ -729,7 +743,7 @@ Which TLS protocol versions are allowed. Allowed values: ``tlsv1.0``,
 
 Default: ``all``
 
-ENV: ``PGBOUNCER_SERVER_TLS_CIPHERS``
+ENV: ``pgbouncer_server_tls_ciphers``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Default: ``HIGH:MEDIUM:+3DES:!aNULL``
@@ -739,7 +753,7 @@ Dangerous timeouts
 
 Setting the following timeouts can cause unexpected errors.
 
-ENV: ``PGBOUNCER_QUERY_TIMEOUT``
+ENV: ``pgbouncer_query_timeout``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Queries running longer than that are canceled. This should be used only
@@ -748,7 +762,7 @@ network problems. [seconds]
 
 Default: ``0.0`` (disabled)
 
-ENV: ``PGBOUNCER_QUERY_WAIT_TIMEOUT``
+ENV: ``pgbouncer_query_wait_timeout``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Maximum time queries are allowed to spend waiting for execution. If the
@@ -762,7 +776,7 @@ indefinitely.
 
 Default: ``120``
 
-ENV: ``PGBOUNCER_CLIENT_IDLE_TIMEOUT``
+ENV: ``pgbouncer_client_idle_timeout``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Client connections idling longer than this many seconds are closed. This
@@ -771,7 +785,7 @@ only used for network problems. [seconds]
 
 Default: ``0.0`` (disabled)
 
-ENV: ``PGBOUNCER_IDLE_TRANSACTION_TIMEOUT``
+ENV: ``pgbouncer_idle_transaction_timeout``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If a client has been in "idle in transaction" state longer, it will be
@@ -779,7 +793,7 @@ disconnected. [seconds]
 
 Default: ``0.0`` (disabled)
 
-ENV: ``PGBOUNCER_SUSPEND_TIMEOUT``
+ENV: ``pgbouncer_suspend_timeout``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 How many seconds to wait for buffer flush during SUSPEND or reboot (-R).
@@ -790,7 +804,7 @@ Default: ``10``
 Low-level network settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ENV: ``PGBOUNCER_PKT_BUF``
+ENV: ``pgbouncer_pkt_buf``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Internal buffer size for packets. Affects size of TCP packets sent and
@@ -799,7 +813,7 @@ no need to set it large.
 
 Default: ``4096``
 
-ENV: ``PGBOUNCER_MAX_PACKET_SIZE``
+ENV: ``pgbouncer_max_packet_size``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Maximum size for PostgreSQL packets that PgBouncer allows through. One
@@ -808,7 +822,7 @@ larger.
 
 Default: ``2147483647``
 
-ENV: ``PGBOUNCER_LISTEN_BACKLOG``
+ENV: ``pgbouncer_listen_backlog``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Backlog argument for listen(2). Determines how many new unanswered
@@ -817,7 +831,7 @@ new connections are dropped.
 
 Default: ``128``
 
-ENV: ``PGBOUNCER_SBUF_LOOPCNT``
+ENV: ``pgbouncer_sbuf_loopcnt``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 How many times to process data on one connection, before proceeding.
@@ -827,19 +841,19 @@ data. 0 means no limit.
 
 Default: ``5``
 
-ENV: ``PGBOUNCER_TCP_DEFER_ACCEPT``
+ENV: ``pgbouncer_tcp_defer_accept``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For details on this and other TCP options, please see ``man 7 tcp``.
 
 Default: ``45`` on Linux, otherwise ``0``
 
-ENV: ``PGBOUNCER_TCP_SOCKET_BUFFER``
+ENV: ``pgbouncer_tcp_socket_buffer``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Default: not set
 
-ENV: ``PGBOUNCER_TCP_KEEPALIVE``
+ENV: ``pgbouncer_tcp_keepalive``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Turns on basic keepalive with OS defaults.
@@ -849,22 +863,22 @@ tcp_keepcnt=9. They are probably similar on other operating systems.
 
 Default: ``1``
 
-ENV: ``PGBOUNCER_TCP_KEEPCNT``
+ENV: ``pgbouncer_tcp_keepcnt``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Default: not set
 
-ENV: ``PGBOUNCER_TCP_KEEPIDLE``
+ENV: ``pgbouncer_tcp_keepidle``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Default: not set
 
-ENV: ``PGBOUNCER_TCP_KEEPINTVL``
+ENV: ``pgbouncer_tcp_keepintvl``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Default: not set
 
-ENV: ``PGBOUNCER_TCP_USER_TIMEOUT``
+ENV: ``pgbouncer_tcp_user_timeout``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Sets the ``TCP_USER_TIMEOUT`` socket option. This specifies the maximum
@@ -894,14 +908,14 @@ value is taken as connection string for requested database. Such
 automatically created database entries are cleaned up if they stay idle
 longer than the time specified by the ``autodb_idle_timeout`` parameter.
 
-ENV: ``DATABASES_DBNAME``
+ENV: ``databases_dbname``
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Destination database name.
 
 Default: same as client-side database name
 
-ENV: ``DATABASES_HOST``
+ENV: ``databases_host``
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 Host name or IP address to connect to. Host names are resolved at
@@ -913,12 +927,12 @@ DNS returns several results, they are used in round-robin manner.
 
 Default: not set, meaning to use a Unix socket
 
-ENV: ``DATABASES_PORT``
+ENV: ``databases_port``
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 Default: ``5432``
 
-ENV: ``DATABASES_USER``
+ENV: ``databases_user``
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 If ``user=`` is set, all connections to the destination database will be
@@ -928,7 +942,7 @@ for this database.
 Otherwise, PgBouncer logs into the destination database with the client
 user name, meaning that there will be one pool per user.
 
-ENV: ``DATABASES_PASSWORD``
+ENV: ``databases_password``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The length for ``password`` is limited to 160 characters maximum.
@@ -936,53 +950,53 @@ The length for ``password`` is limited to 160 characters maximum.
 If no password is specified here, the password from the ``auth_file`` or
 ``auth_query`` will be used.
 
-ENV: ``DATABASES_AUTH_USER``
+ENV: ``databases_auth_user``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Override of the global ``auth_user`` setting, if specified.
 
-ENV: ``DATABASES_POOL_SIZE``
+ENV: ``databases_pool_size``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Set the maximum size of pools for this database. If not set, the
 ``default_pool_size`` is used.
 
-ENV: ``DATABASES_RESERVE_POOL``
+ENV: ``databases_reserve_pool``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Set additional connections for this database. If not set,
 ``reserve_pool_size`` is used.
 
-ENV: ``DATABASES_CONNECT_QUERY``
+ENV: ``databases_connect_query``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Query to be executed after a connection is established, but before
 allowing the connection to be used by any clients. If the query raises
 errors, they are logged but ignored otherwise.
 
-ENV: ``DATABASES_POOL_MODE``
+ENV: ``databases_pool_mode``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Set the pool mode specific to this database. If not set, the default
 ``pool_mode`` is used.
 
-ENV: ``DATABASES_MAX_DB_CONNECTIONS``
+ENV: ``databases_max_db_connections``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Configure a database-wide maximum (i.e. all pools within the database
 will not have more than this many server connections).
 
-ENV: ``DATABASES_CLIENT_ENCODING``
+ENV: ``databases_client_encoding``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Ask specific ``client_encoding`` from server.
 
-ENV: ``DATABASES_DATESTYLE``
+ENV: ``databases_datestyle``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Ask specific ``datestyle`` from server.
 
-ENV: ``DATABASES_TIMEZONE``
+ENV: ``databases_timezone``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Ask specific ``timezone`` from server.
@@ -995,17 +1009,23 @@ and the value as a libpq connection string style list of key=value pairs
 of configuration settings specific for this user. Only a few settings
 are available here.
 
-ENV: ``USERS_POOL_MODE``
-^^^^^^^^^^^^^^^^^^^^^^^^
+``pool_mode``
+^^^^^^^^^^^^^
 
 Set the pool mode to be used for all connections from this user. If not
 set, the database or default ``pool_mode`` is used.
 
-ENV: ``USERS_MAX_USER_CONNECTIONS``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``max_user_connections``
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Configure a maximum for the user (i.e. all pools with the user will not
 have more than this many server connections).
+
+Example:
+
+Set ``pool_mode`` and ``max_user_connections`` for user mosquito.
+
+ENV: ``user_mosquito="pool_mode=session max_user_connections=10"
 
 HBA file format
 ~~~~~~~~~~~~~~~
@@ -1031,14 +1051,14 @@ Metrics configurations
 The image includes a metric provider in prometheus format, metrics are
 collected aggregated from all instances of ``pgbouncer``.
 
-ENV: ``METRICS_ADDR``
+ENV: ``metrics_addr``
 ^^^^^^^^^^^^^^^^^^^^^
 
 Address of listening to metrics provider
 
 Default: ``::1``
 
-ENV: ``METRICS_PORT``
+ENV: ``metrics_port``
 ^^^^^^^^^^^^^^^^^^^^^
 
 Port of listening to metrics provider
