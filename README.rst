@@ -19,11 +19,12 @@ Minimal config:
 .. code:: bash
 
    docker run --rm -it --name pgbouncer \
-       -p 8080:8080 \
-       -p 6432:6432 \
-       -e DATABASES_template1="host=127.0.0.1 dbname=template1 auth_user=someuser" \
-       -e PGBOUNCER_POOL_MODE="session" \
-       -e AUTH_user="secret" \
+        -p 8080:8080 \
+        -p 6432:6432 \
+        -e DATABASES_template1="host=127.0.0.1 dbname=template1 auth_user=someuser" \
+        -e PGBOUNCER_POOL_MODE="session" \
+        -e AUTH_user="secret" \
+        mosquito/pgbouncer-docker
 
 
 Configuration
