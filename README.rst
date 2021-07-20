@@ -54,6 +54,11 @@ of the section from the configuration file pgbouncer.ini,
 ``{PARAMETER_NAME}`` is the value of the parameter, and ``{VALUE}`` is a
 parameter value.
 
+The names of environment variables are mostly case-insensitive.
+However, since some sections contain the username in the name,
+the user name is case-sensitive. For uniformity, all following variables are
+described as lower cased.
+
 Entrypoint specific settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
