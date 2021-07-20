@@ -1030,7 +1030,7 @@ Example:
 
 Set ``pool_mode`` and ``max_user_connections`` for user mosquito.
 
-ENV: ``user_mosquito="pool_mode=session max_user_connections=10"
+ENV: ``user_mosquito="pool_mode=session max_user_connections=10"``
 
 HBA file format
 ~~~~~~~~~~~~~~~
