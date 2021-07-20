@@ -52,13 +52,13 @@ ENV: ``LOG_LEVEL``
 
 Entrypoint log level. Possible values is:
 
--  critical
--  fatal
--  error
--  warning
--  warn
--  info
--  debug
+-  ``critical``
+-  ``fatal``
+-  ``error``
+-  ``warning``
+-  ``warn``
+-  ``info``
+-  ``debug``
 
 User authentication settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
