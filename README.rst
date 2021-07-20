@@ -24,7 +24,7 @@ Minimal config:
         -e databases_template1="host=127.0.0.1 dbname=template1 auth_user=someuser" \
         -e pgbouncer_pool_mode="session" \
         -e auth_mosquito="strong-db-secret-11!" \
-        mosquito/pgbouncer-docker
+        mosquito/pgbouncer
 
 User specific config example:
 
@@ -37,7 +37,7 @@ User specific config example:
         -e pgbouncer_pool_mode="session" \
         -e auth_mosquito="strong-db-secret-11!" \
         -e user_mosquito="pool_mode=session max_user_connections=5" \
-        mosquito/pgbouncer-docker
+        mosquito/pgbouncer
 
 
 

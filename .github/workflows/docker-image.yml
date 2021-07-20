@@ -36,8 +36,8 @@ jobs:
         DATE_TAG=$(date +%Y-%m-%d)
         docker pull ghcr.io/mosquito/pgbouncer-docker || true
         docker build -t ghcr.io/mosquito/pgbouncer-docker .
-        docker tag ghcr.io/mosquito/pgbouncer-docker mosquito/pgbouncer-docker:latest
-        docker tag mosquito/pgbouncer-docker:latest mosquito/pgbouncer-docker:${DATE_TAG}
+        docker tag ghcr.io/mosquito/pgbouncer-docker mosquito/pgbouncer:latest
+        docker tag mosquito/pgbouncer:latest mosquito/pgbouncer:${DATE_TAG}
         docker push ghcr.io/mosquito/pgbouncer-docker
-        docker push mosquito/pgbouncer-docker:${DATE_TAG}
-        docker push mosquito/pgbouncer-docker:latest
+        docker push mosquito/pgbouncer:${DATE_TAG}
+        docker push mosquito/pgbouncer:latest
