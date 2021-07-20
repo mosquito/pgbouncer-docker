@@ -127,8 +127,14 @@ docker run --rm -it --name pgbouncer \
         + [ENV: `USERS_POOL_MODE`](#env---users-pool-mode-)
         + [ENV: `USERS_MAX_USER_CONNECTIONS`](#env---users-max-user-connections-)
     * [HBA file format](#hba-file-format)
+    * [Metrics configurations](#metrics-configurations)
+        + [ENV: `METRICS_ADDR`](#env---metrics-addr-)
+        + [ENV: `METRICS_PORT`](#env---metrics-port-)
+    * [Provided metrics](#provided-metrics)
 
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>
+Table of contents generated with markdown-toc
+</a></i></small>
 
 ## Configuration
 
@@ -1018,3 +1024,228 @@ It follows the format of the PostgreSQL `pg_hba.conf` file
 * Auth-method field: Only methods supported by PgBouncer's `auth_type`
   are supported, except `any` and `pam`, which only work globally.
   User name map (`map=`) parameter is not supported.
+
+### Metrics configurations
+
+The image includes a metric provider in prometheus format, metrics 
+are collected aggregated from all instances of `pgbouncer`.
+
+#### ENV: `METRICS_ADDR`
+
+Address of listening to metrics provider
+
+Default: `::1`
+
+#### ENV: `METRICS_PORT`
+
+Port of listening to metrics provider
+
+Default: `8080`
+
+### Provided metrics
+
+* `pgbouncer_stats_total_xact_count` - "total_xact_count" field for record query "show stats"
+    * `pgbouncer_stats_total_xact_count_total` - `counter`
+    * `pgbouncer_stats_total_xact_count_created` - `gauge`
+* `pgbouncer_stats_total_query_count` - "total_query_count" field for record query "show stats"
+    * `pgbouncer_stats_total_query_count_total` - `counter`
+    * `pgbouncer_stats_total_query_count_created` - `gauge`
+* `pgbouncer_stats_total_received` - "total_received" field for record query "show stats"
+    * `pgbouncer_stats_total_received_total` - `counter`
+    * `pgbouncer_stats_total_received_created` - `gauge`
+* `pgbouncer_stats_total_sent` - "total_sent" field for record query "show stats"
+    * `pgbouncer_stats_total_sent_total` - `counter`
+    * `pgbouncer_stats_total_sent_created` - `gauge`
+* `pgbouncer_stats_total_xact_time` - "total_xact_time" field for record query "show stats"
+    * `pgbouncer_stats_total_xact_time_total` - `counter`
+    * `pgbouncer_stats_total_xact_time_created` - `gauge`
+* `pgbouncer_stats_total_query_time` - "total_query_time" field for record query "show stats"
+    * `pgbouncer_stats_total_query_time_total` - `counter`
+    * `pgbouncer_stats_total_query_time_created` - `gauge`
+* `pgbouncer_stats_total_wait_time` - "total_wait_time" field for record query "show stats"
+    * `pgbouncer_stats_total_wait_time_total` - `counter`
+    * `pgbouncer_stats_total_wait_time_created` - `gauge`
+* `pgbouncer_stats_avg_xact_count` - "avg_xact_count" field for record query "show stats"
+    * `pgbouncer_stats_avg_xact_count_total` - `counter`
+    * `pgbouncer_stats_avg_xact_count_created` - `gauge`
+* `pgbouncer_stats_avg_query_count` - "avg_query_count" field for record query "show stats"
+    * `pgbouncer_stats_avg_query_count_total` - `counter`
+    * `pgbouncer_stats_avg_query_count_created` - `gauge`
+* `pgbouncer_stats_avg_recv` - "avg_recv" field for record query "show stats"
+    * `pgbouncer_stats_avg_recv_total` - `counter`
+    * `pgbouncer_stats_avg_recv_created` - `gauge`
+* `pgbouncer_stats_avg_sent` - "avg_sent" field for record query "show stats"
+    * `pgbouncer_stats_avg_sent_total` - `counter`
+    * `pgbouncer_stats_avg_sent_created` - `gauge`
+* `pgbouncer_stats_avg_xact_time` - "avg_xact_time" field for record query "show stats"
+    * `pgbouncer_stats_avg_xact_time_total` - `counter`
+    * `pgbouncer_stats_avg_xact_time_created` - `gauge`
+* `pgbouncer_stats_avg_query_time` - "avg_query_time" field for record query "show stats"
+    * `pgbouncer_stats_avg_query_time_total` - `counter`
+    * `pgbouncer_stats_avg_query_time_created` - `gauge`
+* `pgbouncer_stats_avg_wait_time` - "avg_wait_time" field for record query "show stats"
+    * `pgbouncer_stats_avg_wait_time_total` - `counter`
+    * `pgbouncer_stats_avg_wait_time_created` - `gauge`
+* `pgbouncer_clients_port` - "port" field for record query "show clients"
+    * `pgbouncer_clients_port_total` - `counter`
+    * `pgbouncer_clients_port_created` - `gauge`
+* `pgbouncer_clients_local_port` - "local_port" field for record query "show clients"
+    * `pgbouncer_clients_local_port_total` - `counter`
+    * `pgbouncer_clients_local_port_created` - `gauge`
+* `pgbouncer_clients_wait` - "wait" field for record query "show clients"
+    * `pgbouncer_clients_wait_total` - `counter`
+    * `pgbouncer_clients_wait_created` - `gauge`
+* `pgbouncer_clients_wait_us` - "wait_us" field for record query "show clients"
+    * `pgbouncer_clients_wait_us_total` - `counter`
+    * `pgbouncer_clients_wait_us_created` - `gauge`
+* `pgbouncer_clients_close_needed` - "close_needed" field for record query "show clients"
+    * `pgbouncer_clients_close_needed_total` - `counter`
+    * `pgbouncer_clients_close_needed_created` - `gauge`
+* `pgbouncer_clients_remote_pid` - "remote_pid" field for record query "show clients"
+    * `pgbouncer_clients_remote_pid_total` - `counter`
+    * `pgbouncer_clients_remote_pid_created` - `gauge`
+* `pgbouncer_pools_cl_active` - "cl_active" field for record query "show pools"
+    * `pgbouncer_pools_cl_active_total` - `counter`
+    * `pgbouncer_pools_cl_active_created` - `gauge`
+* `pgbouncer_pools_cl_waiting` - "cl_waiting" field for record query "show pools"
+    * `pgbouncer_pools_cl_waiting_total` - `counter`
+    * `pgbouncer_pools_cl_waiting_created` - `gauge`
+* `pgbouncer_pools_sv_active` - "sv_active" field for record query "show pools"
+    * `pgbouncer_pools_sv_active_total` - `counter`
+    * `pgbouncer_pools_sv_active_created` - `gauge`
+* `pgbouncer_pools_sv_idle` - "sv_idle" field for record query "show pools"
+    * `pgbouncer_pools_sv_idle_total` - `counter`
+    * `pgbouncer_pools_sv_idle_created` - `gauge`
+* `pgbouncer_pools_sv_used` - "sv_used" field for record query "show pools"
+    * `pgbouncer_pools_sv_used_total` - `counter`
+    * `pgbouncer_pools_sv_used_created` - `gauge`
+* `pgbouncer_pools_sv_tested` - "sv_tested" field for record query "show pools"
+    * `pgbouncer_pools_sv_tested_total` - `counter`
+    * `pgbouncer_pools_sv_tested_created` - `gauge`
+* `pgbouncer_pools_sv_login` - "sv_login" field for record query "show pools"
+    * `pgbouncer_pools_sv_login_total` - `counter`
+    * `pgbouncer_pools_sv_login_created` - `gauge`
+* `pgbouncer_pools_maxwait` - "maxwait" field for record query "show pools"
+    * `pgbouncer_pools_maxwait_total` - `counter`
+    * `pgbouncer_pools_maxwait_created` - `gauge`
+* `pgbouncer_pools_maxwait_us` - "maxwait_us" field for record query "show pools"
+    * `pgbouncer_pools_maxwait_us_total` - `counter`
+    * `pgbouncer_pools_maxwait_us_created` - `gauge`
+* `pgbouncer_lists_items` - "items" field for record query "show lists"
+    * `pgbouncer_lists_items_total` - `counter`
+    * `pgbouncer_lists_items_created` - `gauge`
+* `pgbouncer_users` Result of query "show users"
+    * `pgbouncer_users` - `gauge`
+* `pgbouncer_databases_port` - "port" field for record query "show databases"
+    * `pgbouncer_databases_port_total` - `counter`
+    * `pgbouncer_databases_port_created` - `gauge`
+* `pgbouncer_databases_pool_size` - "pool_size" field for record query "show databases"
+    * `pgbouncer_databases_pool_size_total` - `counter`
+    * `pgbouncer_databases_pool_size_created` - `gauge`
+* `pgbouncer_databases_reserve_pool` - "reserve_pool" field for record query "show databases"
+    * `pgbouncer_databases_reserve_pool_total` - `counter`
+    * `pgbouncer_databases_reserve_pool_created` - `gauge`
+* `pgbouncer_databases_max_connections` - "max_connections" field for record query "show databases"
+    * `pgbouncer_databases_max_connections_total` - `counter`
+    * `pgbouncer_databases_max_connections_created` - `gauge`
+* `pgbouncer_databases_current_connections` - "current_connections" field for record query "show databases"
+    * `pgbouncer_databases_current_connections_total` - `counter`
+    * `pgbouncer_databases_current_connections_created` - `gauge`
+* `pgbouncer_databases_paused` - "paused" field for record query "show databases"
+    * `pgbouncer_databases_paused_total` - `counter`
+    * `pgbouncer_databases_paused_created` - `gauge`
+* `pgbouncer_databases_disabled` - "disabled" field for record query "show databases"
+    * `pgbouncer_databases_disabled_total` - `counter`
+    * `pgbouncer_databases_disabled_created` - `gauge`
+* `pgbouncer_fds_fd` - "fd" field for record query "show fds"
+    * `pgbouncer_fds_fd_total` - `counter`
+    * `pgbouncer_fds_fd_created` - `gauge`
+* `pgbouncer_fds_port` - "port" field for record query "show fds"
+    * `pgbouncer_fds_port_total` - `counter`
+    * `pgbouncer_fds_port_created` - `gauge`
+* `pgbouncer_fds_cancel` - "cancel" field for record query "show fds"
+    * `pgbouncer_fds_cancel_total` - `counter`
+    * `pgbouncer_fds_cancel_created` - `gauge`
+* `pgbouncer_fds_link` - "link" field for record query "show fds"
+    * `pgbouncer_fds_link_total` - `counter`
+    * `pgbouncer_fds_link_created` - `gauge`
+* `pgbouncer_sockets_port` - "port" field for record query "show sockets"
+    * `pgbouncer_sockets_port_total` - `counter`
+    * `pgbouncer_sockets_port_created` - `gauge`
+* `pgbouncer_sockets_local_port` - "local_port" field for record query "show sockets"
+    * `pgbouncer_sockets_local_port_total` - `counter`
+    * `pgbouncer_sockets_local_port_created` - `gauge`
+* `pgbouncer_sockets_wait` - "wait" field for record query "show sockets"
+    * `pgbouncer_sockets_wait_total` - `counter`
+    * `pgbouncer_sockets_wait_created` - `gauge`
+* `pgbouncer_sockets_wait_us` - "wait_us" field for record query "show sockets"
+    * `pgbouncer_sockets_wait_us_total` - `counter`
+    * `pgbouncer_sockets_wait_us_created` - `gauge`
+* `pgbouncer_sockets_close_needed` - "close_needed" field for record query "show sockets"
+    * `pgbouncer_sockets_close_needed_total` - `counter`
+    * `pgbouncer_sockets_close_needed_created` - `gauge`
+* `pgbouncer_sockets_remote_pid` - "remote_pid" field for record query "show sockets"
+    * `pgbouncer_sockets_remote_pid_total` - `counter`
+    * `pgbouncer_sockets_remote_pid_created` - `gauge`
+* `pgbouncer_sockets_recv_pos` - "recv_pos" field for record query "show sockets"
+    * `pgbouncer_sockets_recv_pos_total` - `counter`
+    * `pgbouncer_sockets_recv_pos_created` - `gauge`
+* `pgbouncer_sockets_pkt_pos` - "pkt_pos" field for record query "show sockets"
+    * `pgbouncer_sockets_pkt_pos_total` - `counter`
+    * `pgbouncer_sockets_pkt_pos_created` - `gauge`
+* `pgbouncer_sockets_pkt_remain` - "pkt_remain" field for record query "show sockets"
+    * `pgbouncer_sockets_pkt_remain_total` - `counter`
+    * `pgbouncer_sockets_pkt_remain_created` - `gauge`
+* `pgbouncer_sockets_send_pos` - "send_pos" field for record query "show sockets"
+    * `pgbouncer_sockets_send_pos_total` - `counter`
+    * `pgbouncer_sockets_send_pos_created` - `gauge`
+* `pgbouncer_sockets_send_remain` - "send_remain" field for record query "show sockets"
+    * `pgbouncer_sockets_send_remain_total` - `counter`
+    * `pgbouncer_sockets_send_remain_created` - `gauge`
+* `pgbouncer_sockets_pkt_avail` - "pkt_avail" field for record query "show sockets"
+    * `pgbouncer_sockets_pkt_avail_total` - `counter`
+    * `pgbouncer_sockets_pkt_avail_created` - `gauge`
+* `pgbouncer_sockets_send_avail` - "send_avail" field for record query "show sockets"
+    * `pgbouncer_sockets_send_avail_total` - `counter`
+    * `pgbouncer_sockets_send_avail_created` - `gauge`
+* `pgbouncer_active_sockets_port` - "port" field for record query "show active_sockets"
+    * `pgbouncer_active_sockets_port_total` - `counter`
+    * `pgbouncer_active_sockets_port_created` - `gauge`
+* `pgbouncer_active_sockets_local_port` - "local_port" field for record query "show active_sockets"
+    * `pgbouncer_active_sockets_local_port_total` - `counter`
+    * `pgbouncer_active_sockets_local_port_created` - `gauge`
+* `pgbouncer_active_sockets_wait` - "wait" field for record query "show active_sockets"
+    * `pgbouncer_active_sockets_wait_total` - `counter`
+    * `pgbouncer_active_sockets_wait_created` - `gauge`
+* `pgbouncer_active_sockets_wait_us` - "wait_us" field for record query "show active_sockets"
+    * `pgbouncer_active_sockets_wait_us_total` - `counter`
+    * `pgbouncer_active_sockets_wait_us_created` - `gauge`
+* `pgbouncer_active_sockets_close_needed` - "close_needed" field for record query "show active_sockets"
+    * `pgbouncer_active_sockets_close_needed_total` - `counter`
+    * `pgbouncer_active_sockets_close_needed_created` - `gauge`
+* `pgbouncer_active_sockets_remote_pid` - "remote_pid" field for record query "show active_sockets"
+    * `pgbouncer_active_sockets_remote_pid_total` - `counter`
+    * `pgbouncer_active_sockets_remote_pid_created` - `gauge`
+* `pgbouncer_active_sockets_recv_pos` - "recv_pos" field for record query "show active_sockets"
+    * `pgbouncer_active_sockets_recv_pos_total` - `counter`
+    * `pgbouncer_active_sockets_recv_pos_created` - `gauge`
+* `pgbouncer_active_sockets_pkt_pos` - "pkt_pos" field for record query "show active_sockets"
+    * `pgbouncer_active_sockets_pkt_pos_total` - `counter`
+    * `pgbouncer_active_sockets_pkt_pos_created` - `gauge`
+* `pgbouncer_active_sockets_pkt_remain` - "pkt_remain" field for record query "show active_sockets"
+    * `pgbouncer_active_sockets_pkt_remain_total` - `counter`
+    * `pgbouncer_active_sockets_pkt_remain_created` - `gauge`
+* `pgbouncer_active_sockets_send_pos` - "send_pos" field for record query "show active_sockets"
+    * `pgbouncer_active_sockets_send_pos_total` - `counter`
+    * `pgbouncer_active_sockets_send_pos_created` - `gauge`
+* `pgbouncer_active_sockets_send_remain` - "send_remain" field for record query "show active_sockets"
+    * `pgbouncer_active_sockets_send_remain_total` - `counter`
+    * `pgbouncer_active_sockets_send_remain_created` - `gauge`
+* `pgbouncer_active_sockets_pkt_avail` - "pkt_avail" field for record query "show active_sockets"
+    * `pgbouncer_active_sockets_pkt_avail_total` - `counter`
+    * `pgbouncer_active_sockets_pkt_avail_created` - `gauge`
+* `pgbouncer_active_sockets_send_avail` - "send_avail" field for record query "show active_sockets"
+    * `pgbouncer_active_sockets_send_avail_total` - `counter`
+    * `pgbouncer_active_sockets_send_avail_created` - `gauge`
+* `pgbouncer_version` Result of query "show version"
+    * `pgbouncer_version` - `gauge`
