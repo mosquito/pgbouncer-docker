@@ -1,0 +1,43 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: "0 18 * * FRI"
+    - cron: "0 18 * * WED"
+
+jobs:
+
+  base:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.CR_PAT }}
+
+    - name: Login to hub.docker.io Container Registry
+      uses: docker/login-action@v1
+      with:
+        username: mosquito
+        password: ${{ secrets.DH_TOKEN }}
+
+    - name: Build image
+      run: |
+        DATE_TAG=$(date +%Y-%m-%d)
+        docker pull ghcr.io/mosquito/pgbouncer-docker || true
+        docker build -t ghcr.io/mosquito/pgbouncer-docker .
+        docker tag ghcr.io/mosquito/pgbouncer-docker mosquito/pgbouncer-docker:latest
+        docker tag mosquito/pgbouncer-docker:latest mosquito/pgbouncer-docker:${DATE_TAG}
+        docker push ghcr.io/mosquito/pgbouncer-docker
+        docker push mosquito/pgbouncer-docker:${DATE_TAG}
+        docker push mosquito/pgbouncer-docker:latest
