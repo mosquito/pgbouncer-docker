@@ -895,8 +895,8 @@ This is currently only supported on Linux.
 
 Default: ``0``
 
-Section [databases]
-~~~~~~~~~~~~~~~~~~~
+databases options
+~~~~~~~~~~~~~~~~~
 
 This contains key=value pairs where the key will be taken as a database
 name and the value as a libpq connection string style list of key=value
@@ -1006,8 +1006,8 @@ ENV: ``databases_timezone``
 
 Ask specific ``timezone`` from server.
 
-Section [users]
-~~~~~~~~~~~~~~~
+users options
+~~~~~~~~~~~~~
 
 This contains key=value pairs where the key will be taken as a user name
 and the value as a libpq connection string style list of key=value pairs
