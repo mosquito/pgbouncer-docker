@@ -4,6 +4,13 @@ PGBouncer
 PGBouncer Docker image with prometheus exporter and dynamic
 configuration from environment.
 
+A distinctive feature of this image is the ``entrypoint``, which provides:
+
+* Multiprocessing support. Several PgBouncer processes are started on the
+  same port, which ensures the utilization of more than one core.
+* Support for metrics in prometheus format.
+* Fully dynamic configuration from environment variables.
+
 Example
 -------
 
