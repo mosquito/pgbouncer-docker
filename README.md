@@ -4,6 +4,20 @@ PGBouncer
 PGBouncer Docker image with prometheus exporter and dynamic configuration 
 from environment.
 
+## Example
+
+Minimal config:
+
+```bash
+docker run --rm -it --name pgbouncer \
+    -p 8080:8080 \
+    -p 6432:6432 \
+    -e DATABASES_template1="host=127.0.0.1 dbname=template1 auth_user=someuser" \
+    -e PGBOUNCER_POOL_MODE="session" \
+    -e AUTH_user="secret" \
+
+```
+
 
 ## Configuration
 
@@ -30,6 +44,14 @@ Entrypoint log level. Possible values is:
 * warn
 * info
 * debug
+
+### User authentication settings
+
+#### ENV: `AUTH_{username}={password}`
+
+Adds the user `{username}` with the password `{password}` to userlist.txt
+to the file. The password can be hashed, and `PGBOUNCER_AUTH_TYPE` must be
+set accordingly.
 
 ## Generic settings
 
@@ -885,19 +907,3 @@ It follows the format of the PostgreSQL `pg_hba.conf` file
 * Auth-method field: Only methods supported by PgBouncer's `auth_type`
   are supported, except `any` and `pam`, which only work globally.
   User name map (`map=`) parameter is not supported.
-
-
-### Example
-
-Minimal config:
-
-```bash
-docker run --rm -it --name pgbouncer \
-    -p 8080:8080 \
-    -p 6432:6432 \
-    -e DATABASES_template1="host=127.0.0.1 dbname=template1 auth_user=someuser" \
-    -e PGBOUNCER_POOL_MODE="session" \
-    -e AUTH_user="secret" \
-
-```
-
