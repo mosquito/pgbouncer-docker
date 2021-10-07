@@ -35,7 +35,7 @@ def log_reader(log_file):
     try:
         with open(log_file, "rb") as fp:
             while True:
-                sys.stderr.buffer.write(fp.read())
+                sys.stderr.buffer.write(fp.read(1024))
     except KeyboardInterrupt:
         return
     finally:
