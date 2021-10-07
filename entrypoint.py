@@ -129,7 +129,7 @@ def pgbouncer_exporter(port, address, *dsns: str, update_interval=15):
 
                     for name, value in record.items():
                         metric = make_metric(
-                            Counter,
+                            Gauge,
                             documentation=(
                                 "\"{name}\" field for record query "
                                 "\"show {topic}\""
@@ -142,7 +142,12 @@ def pgbouncer_exporter(port, address, *dsns: str, update_interval=15):
                             labelnames=tuple(label_values.keys()),
                         )
 
-                        metric.labels(**label_values).inc(float(value))
+                        value = float(value)
+
+                        if value > 0:
+                            metric.labels(**label_values).inc(value)
+                        else:
+                            metric.labels(**label_values).dec(value)
 
             common_ignored_labels = ("connect_time", "request_time", "ptr")
 
