@@ -36,7 +36,7 @@ User specific config example:
         -e databases_template1="host=127.0.0.1 dbname=template1 auth_user=someuser" \
         -e pgbouncer_pool_mode="session" \
         -e auth_mosquito="strong-db-secret-11!" \
-        -e user_mosquito="pool_mode=session max_user_connections=5" \
+        -e users_mosquito="pool_mode=session max_user_connections=5" \
         mosquito/pgbouncer
 
 
@@ -1030,7 +1030,7 @@ Example:
 
 Set ``pool_mode`` and ``max_user_connections`` for user mosquito.
 
-ENV: ``user_mosquito="pool_mode=session max_user_connections=10"``
+ENV: ``users_mosquito="pool_mode=session max_user_connections=10"``
 
 HBA file format
 ~~~~~~~~~~~~~~~
