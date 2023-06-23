@@ -1,4 +1,4 @@
-FROM snakepacker/python:3.8
+FROM snakepacker/python:3.10
 
 RUN apt-install pgbouncer
 RUN apt-install \
